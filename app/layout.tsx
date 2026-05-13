@@ -63,60 +63,123 @@ const siteUrl =
  * METADATA
  */
 
-export const metadata: Metadata =
-  {
-    metadataBase:
-      new URL(siteUrl),
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
 
-    title: {
-      default:
-        "Licenciatura en Lingüística | Universidad",
+  title: {
+    default:
+      "Lingüística e Idiomas | UPEA",
 
-      template:
-        "%s | Lingüística UPEA",
+    template:
+      "%s | Lingüística e Idiomas UPEA",
+  },
+
+  description:
+    "Sitio oficial de la Carrera de Lingüística e Idiomas de la Universidad Pública de El Alto.",
+
+  applicationName:
+    "Lingüística e Idiomas UPEA",
+
+  keywords: [
+    "UPEA",
+    "Lingüística",
+    "Idiomas",
+    "Lenguas",
+    "Universidad Pública de El Alto",
+    "Carrera UPEA",
+    "Lenguaje",
+    "Idiomas UPEA",
+  ],
+
+  authors: [
+    {
+      name:
+        "Universidad Pública de El Alto",
     },
+  ],
+
+  creator:
+    "Universidad Pública de El Alto",
+
+  publisher:
+    "Universidad Pública de El Alto",
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+
+  icons: {
+    icon: [
+      {
+        url: "/logo_upea.png",
+
+        type: "image/png",
+
+        sizes: "32x32",
+      },
+
+      {
+        url: "/logo_upea.png",
+
+        type: "image/png",
+
+        sizes: "192x192",
+      },
+    ],
+
+    shortcut:
+      "/logo_upea.png",
+
+    apple:
+      "/logo_upea.png",
+  },
+
+  openGraph: {
+    title:
+      "Lingüística e Idiomas | UPEA",
 
     description:
-      "Explora el fascinante mundo del lenguaje. Programa académico de excelencia en Lingüística.",
+      "Sitio oficial de la Carrera de Lingüística e Idiomas de la Universidad Pública de El Alto.",
 
-    applicationName:
-      "Lingüística UPEA",
+    type: "website",
 
-    robots: {
-      index: true,
+    locale: "es_ES",
 
-      follow: true,
-    },
+    siteName:
+      "Lingüística e Idiomas UPEA",
 
-    openGraph: {
-      title:
-        "Licenciatura en Lingüística",
+    url: siteUrl,
 
-      description:
-        "Programa académico de excelencia en Lingüística.",
+    images: [
+      {
+        url: "/logo_upea.png",
 
-      type: "website",
+        width: 1200,
 
-      locale: "es_ES",
+        height: 630,
 
-      siteName:
-        "Lingüística UPEA",
+        alt:
+          "Lingüística e Idiomas UPEA",
+      },
+    ],
+  },
 
-      url: siteUrl,
-    },
+  twitter: {
+    card:
+      "summary_large_image",
 
-    twitter: {
-      card:
-        "summary_large_image",
+    title:
+      "Lingüística e Idiomas | UPEA",
 
-      title:
-        "Licenciatura en Lingüística",
+    description:
+      "Sitio oficial de la Carrera de Lingüística e Idiomas de la Universidad Pública de El Alto.",
 
-      description:
-        "Programa académico de excelencia en Lingüística.",
-    },
-  };
-
+    images: [
+      "/logo_upea.png",
+    ],
+  },
+};
 interface RootLayoutProps {
   children: React.ReactNode;
 }
