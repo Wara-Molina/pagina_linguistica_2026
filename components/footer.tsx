@@ -90,35 +90,37 @@ export function Footer() {
    * LINKS SEGUROS
    */
 
-  const links =
-    useMemo(() => {
-      return (
-        institucion?.links ||
-        []
+const links =
+  useMemo(() => {
+    return (
+      institucion?.linksExternoInterno ||
+      []
+    )
+      .filter(
+        (link) =>
+          !!sanitizeExternalUrl(
+            link?.url_link
+          )
       )
-        .filter(
-          (link) =>
-            !!sanitizeExternalUrl(
-              link?.url_link
-            )
-        )
-        .map((link) => ({
-          id:
-            link.id_link,
+      .map((link) => ({
+        id:
+          link.id_link,
 
-          nombre:
-            sanitizeText(
-              link.nombre ||
-                "Enlace",
-              120
-            ),
+        nombre:
+          sanitizeText(
+            link.nombre ||
+              "Enlace",
+            120
+          ),
 
-          url:
-            sanitizeExternalUrl(
-              link.url_link
-            ) || "#",
-        }));
-    }, [institucion?.links]);
+        url:
+          sanitizeExternalUrl(
+            link.url_link
+          ) || "#",
+      }));
+  }, [
+    institucion?.linksExternoInterno,
+  ]);
 
   /*
    * REDES SEGURAS
@@ -476,31 +478,83 @@ export function Footer() {
           </div>
         </div>
 
-        {/* ================= BOTTOM ================= */}
-        <div
-          className="
-            border-t
-            border-white/10
-            mt-16
-            pt-8
-            flex
-            flex-col
-            md:flex-row
-            justify-between
-            gap-4
-            text-white/50
-            text-sm
-          "
-        >
-          <p>
-            © 2026 {safeName}. Todos los
-            derechos reservados.
-          </p>
+<div
+  className="
+    border-t
+    border-white/10
+    mt-16
+    pt-8
+    flex
+    flex-col
+    md:flex-row
+    justify-between
+    items-center
+    gap-6
+    text-white/50
+    text-sm
+  "
+>
+  <p className="text-center md:text-left">
+    © 2026 {safeName}. Todos los
+    derechos reservados.
+  </p>
 
-          <p>
-            Universidad Pública de El Alto
-          </p>
-        </div>
+  <div
+    className="
+      flex
+      items-center
+      gap-4
+      flex-wrap
+      justify-center
+    "
+  >
+    <p>
+      Universidad Pública de El Alto
+    </p>
+
+    <a
+      href="https://utic.upea.bo/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="
+        flex
+        items-center
+        gap-3
+        px-4
+        py-2
+        rounded-full
+        bg-white/5
+        border
+        border-white/10
+        hover:bg-white/10
+        transition-all
+        duration-300
+        hover:scale-105
+      "
+      aria-label="UTIC UPEA"
+    >
+      <img
+        src="/images/logo_utic.png"
+        alt="UTIC UPEA"
+        loading="lazy"
+        className="
+          w-8
+          h-8
+          object-contain
+        "
+      />
+
+      <span
+        className="
+          text-white/80
+          font-medium
+        "
+      >
+        UTIC
+      </span>
+    </a>
+  </div>
+</div>
       </div>
     </footer>
   );
