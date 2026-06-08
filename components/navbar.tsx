@@ -806,6 +806,118 @@ export function Navbar() {
           </div>
         </div>
       </motion.header>
+      <AnimatePresence>
+  {isOpen && (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.25 }}
+      className="
+        fixed
+        top-24
+        left-0
+        right-0
+        z-50
+        xl:hidden
+        bg-slate-950/95
+        backdrop-blur-xl
+        border-t
+        border-white/10
+      "
+    >
+      <nav className="flex flex-col p-6 space-y-2">
+        <Link
+          href="/"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Inicio
+        </Link>
+
+        <Link
+          href="/informacion"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Información
+        </Link>
+
+        <Link
+          href="/cursos"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Cursos
+        </Link>
+
+        <Link
+          href="/comunicados"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Comunicados
+        </Link>
+
+        <Link
+          href="/institutoInvestigacion"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Instituto de Investigación
+        </Link>
+
+        <Link
+          href="/publicaciones"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Publicaciones
+        </Link>
+
+        <Link
+          href="/eventos"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Eventos
+        </Link>
+
+        <Link
+          href="/gacetas"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Gacetas
+        </Link>
+
+        <Link
+          href="/videos"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Videos
+        </Link>
+
+        <Link
+          href="/sedes"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Sedes
+        </Link>
+
+        <Link
+          href="/contacto"
+          onClick={() => setIsOpen(false)}
+          className="rounded-xl px-4 py-3 text-white hover:bg-white/10"
+        >
+          Contacto
+        </Link>
+      </nav>
+    </motion.div>
+  )}
+</AnimatePresence>
     </>
   );
 }

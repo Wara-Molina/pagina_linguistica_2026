@@ -69,6 +69,7 @@ const securityHeaders = [
       connect-src
         'self'
         https:
+        https://apiadministrador.upea.bo
         https://maps.googleapis.com;
 
       frame-src
@@ -112,6 +113,7 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  poweredByHeader: false,
   /*
    * TYPESCRIPT
    */

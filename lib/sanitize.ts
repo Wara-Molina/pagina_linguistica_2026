@@ -79,6 +79,12 @@ const FORBID_ATTR = [
   "srcdoc",
   "srcset",
   "formaction",
+  "onerror",
+  "onclick",
+  "onload",
+  "onmouseover",
+  "onfocus",
+  "onmouseenter",
 ];
 
 /* =========================

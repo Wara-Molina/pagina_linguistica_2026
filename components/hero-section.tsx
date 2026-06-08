@@ -143,7 +143,7 @@ export function HeroSection() {
       ? getStorageUrl(
           portadaActual.portada_imagen
         )
-      : "/images/linguistics-banner.jpg";
+      : "/images/upea-noche.jpg";
 
   /*
    * TEXOS
