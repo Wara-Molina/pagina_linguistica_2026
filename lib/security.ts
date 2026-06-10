@@ -51,9 +51,13 @@ export const sanitizeHTML = (
         ],
 
         FORBID_ATTR: [
-          "style",
-          "srcdoc",
-          "srcset",
+  "style",
+  "srcdoc",
+  "srcset",
+  "onload",
+  "onerror",
+  "onclick",
+  "onmouseover",
         ],
 
         ALLOW_DATA_ATTR: false,

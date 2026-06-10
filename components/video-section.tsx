@@ -55,7 +55,7 @@ export function VideoSection() {
     institucion
       ?.colorinstitucion?.[0];
 
-  const primaryColor =
+  const primaryColor = 
     institutionColors
       ?.color_primario ||
     "#0596CE";
