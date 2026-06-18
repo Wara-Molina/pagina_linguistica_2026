@@ -24,6 +24,3 @@ npm run lint
 ```
 cp .env.copy .env
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
