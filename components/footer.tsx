@@ -449,32 +449,7 @@ const links =
               )}
             </div>
 
-            {mapsUrl && (
-              <a
-                href={
-                  mapsUrl
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
-                  px-5
-                  py-3
-                  rounded-2xl
-                  bg-white
-                  text-black
-                  font-medium
-                  hover:scale-105
-                  transition-transform
-                "
-              >
-                <MapPin className="w-4 h-4" />
-
-                Ver ubicación
-              </a>
-            )}
+   
           </div>
         </div>
 
