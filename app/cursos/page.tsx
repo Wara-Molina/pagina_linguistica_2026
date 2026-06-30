@@ -419,21 +419,30 @@ function CursosContent() {
               )
             );
           }
-        } catch (
-          error
-        ) {
-          console.error(
-            error
-          );
+} catch (error: any) {
 
-          setError(
-            'No se pudieron cargar los cursos'
-          );
-        } finally {
-          setLoading(
-            false
-          );
-        }
+  console.error('[gacetaEventos]', error);
+
+  if (error?.response?.status === 404) {
+
+    setCursos([]);
+    setEventos([]);
+    setTipos([]);
+    setError(null);
+
+  } else {
+
+    setError(
+      'No se pudieron cargar los cursos'
+    );
+
+  }
+
+} finally {
+
+  setLoading(false);
+
+}
       };
 
     fetchData();

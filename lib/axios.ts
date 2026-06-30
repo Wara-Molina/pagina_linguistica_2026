@@ -8,8 +8,7 @@ import axios, {
  * ========================= */
 
 const API_BASE =
-  process.env
-    .NEXT_PUBLIC_API_BASE;
+  process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, "");
 
 const API_TOKEN =
   process.env

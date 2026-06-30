@@ -395,17 +395,67 @@ function EventosContent() {
               )
             );
           }
-        } catch (
-          error
-        ) {
-          console.error(
-            error
-          );
+        } catch (error: any) {
+  const status = error?.response?.status;
 
-          setError(
-            'Error cargando eventos'
-          );
-        } finally {
+  if (status === 404) {
+    setEventos([]);
+
+    try {
+      const institucionId =
+        Number(
+          process.env.NEXT_PUBLIC_INSTITUCION_ID
+        ) || 41;
+
+      const instRes = await api.get(
+        `/institucionesPrincipal/${institucionId}`
+      );
+
+      setInstitucion(
+        instRes.data?.Descripcion || null
+      );
+
+      const colors =
+        instRes.data?.Descripcion
+          ?.colorinstitucion?.[0];
+
+      if (colors) {
+        setPrimaryColor(
+          getSafeColor(
+            colors.color_primario,
+            '#04246C'
+          )
+        );
+
+        setSecondaryColor(
+          getSafeColor(
+            colors.color_secundario,
+            '#0A174E'
+          )
+        );
+
+        setTertiaryColor(
+          getSafeColor(
+            colors.color_terciario,
+            '#020733'
+          )
+        );
+      }
+    } catch {
+      setInstitucion({
+        institucion_nombre: 'UPEA',
+      });
+    }
+
+    return;
+  }
+
+  console.error(error);
+
+  setError(
+    'No se pudo cargar la información.'
+  );
+}finally {
           setLoading(
             false
           );

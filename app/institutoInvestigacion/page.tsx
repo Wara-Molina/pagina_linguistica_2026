@@ -110,6 +110,8 @@ interface InstitucionData {
   colorinstitucion?: ColorInstitucion[];
 }
 
+
+
 // ==================== SEGURIDAD ====================
 
 const isValidHexColor = (
@@ -385,24 +387,68 @@ function InstitutoInvestigacionContent() {
         try {
           setLoading(true);
 
-          const [
-            gacetaEventosRes,
-            recursosRes,
-            instRes,
-          ] =
-            await Promise.all([
-              api.get(
-                `/institucion/${institucionId}/gacetaEventos`
-              ),
+const gacetaEventosPromise =
+  api
+    .get(
+      `/institucion/${institucionId}/gacetaEventos`
+    )
+    .catch((error) => {
+      if (
+        error.response?.status === 404
+      ) {
+        return {
+          data: {
+            upea_evento: [],
+            upea_gaceta_universitaria: [],
+          },
+        };
+      }
 
-              api.get(
-                `/institucion/${institucionId}/recursos`
-              ),
+      throw error;
+    });
 
-              api.get(
-                `/institucionesPrincipal/${institucionId}`
-              ),
-            ]);
+const recursosPromise =
+  api
+    .get(
+      `/institucion/${institucionId}/recursos`
+    )
+    .catch((error) => {
+      if (
+        error.response?.status === 404
+      ) {
+        return {
+          data: {
+            upea_publicaciones: [],
+          },
+        };
+      }
+
+      throw error;
+    });
+const instPromise = api
+  .get(`/institucionesPrincipal/${institucionId}`)
+  .catch((error) => {
+    console.error('[INST ERROR]', {
+      message: error?.message,
+      status: error?.response?.status,
+      data: error?.response?.data,
+      url: error?.config?.url,
+    });
+
+    return { data: null };
+  });
+  
+const [
+  gacetaEventosRes,
+  recursosRes,
+  instRes,
+] = await Promise.all([
+  gacetaEventosPromise,
+  recursosPromise,
+  api.get(
+    `/institucionesPrincipal/${institucionId}`
+  ),
+]);
 
           if (!mounted)
             return;
@@ -704,7 +750,18 @@ function InstitutoInvestigacionContent() {
         busqueda,
       ]
     );
-
+const calendarEvents = useMemo(
+  () =>
+    eventosFiltrados.map((evento) => ({
+      evento_id: evento.evento_id,
+      evento_titulo: evento.evento_titulo,
+      evento_fecha: evento.evento_fecha,
+      evento_hora: evento.evento_hora,
+      evento_lugar: evento.evento_lugar,
+      evento_estado: '1',
+    })),
+  [eventosFiltrados]
+);
   const formatDate = (
     dateString?: string
   ) => {
@@ -953,98 +1010,137 @@ function InstitutoInvestigacionContent() {
 
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-6">
+
             {/* PROYECTOS */}
+{/* PROYECTOS (GACETAS) */}
+{activeTab === 'proyectos' && (
+  <div className="space-y-8">
+    {gacetasFiltradas.length > 0 ? (
+      gacetasFiltradas.map((gaceta) => (
+        <div
+          key={gaceta.gaceta_id}
+          className="bg-white rounded-3xl border shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-1"
+        >
+          <div className="p-8">
+            <h3 className="text-2xl font-bold mb-4 text-gray-900">
+              {gaceta.gaceta_titulo}
+            </h3>
+
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Calendar className="w-4 h-4" />
+              {formatDate(gaceta.gaceta_fecha)}
+            </div>
+
+            {gaceta.gaceta_documento && (
+              <a
+                href={gaceta.gaceta_documento}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-4 text-blue-600 hover:underline"
+              >
+                Ver documento
+              </a>
+            )}
+          </div>
+        </div>
+      ))
+    ) : (
+      <div className="bg-white rounded-3xl border p-12 text-center">
+        <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+
+        <h3 className="text-2xl font-bold text-gray-700 mb-2">
+          No hay proyectos
+        </h3>
+
+        <p className="text-gray-500">
+          No se encontraron proyectos del instituto.
+        </p>
+      </div>
+    )}
+  </div>
+)}
 
 {activeTab === 'eventos' && (
   <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
     
     {/* EVENTOS */}
     
-    <div className="xl:col-span-2 space-y-8">
-      {eventosFiltrados.length > 0 ? (
-        eventosFiltrados.map((evento) => (
-          <Link
-            key={evento.evento_id}
-            href={`/institutoInvestigacion/eventos/${evento.evento_id}`}
-          >
-            <div className="bg-white rounded-3xl border shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
-              
-              <div className="flex flex-col lg:flex-row">
+<div className="xl:col-span-2 space-y-8">
+  {eventosFiltrados.length > 0 ? (
+    eventosFiltrados.map((evento) => (
+      <Link
+        key={evento.evento_id}
+        href={`/institutoInvestigacion/eventos/${evento.evento_id}`}
+      >
+        <div className="bg-white rounded-3xl border shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
+          
+          <div className="flex flex-col lg:flex-row">
+            
+            {evento.evento_imagen && (
+              <div className="relative w-full lg:w-80 h-72 shrink-0">
+                <Image
+                  src={getStorageUrl(evento.evento_imagen)}
+                  alt={evento.evento_titulo}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            )}
+
+            <div className="flex-1 p-8">
+              <h3 className="text-2xl font-bold mb-4 text-gray-900">
+                {evento.evento_titulo}
+              </h3>
+
+              {evento.evento_descripcion && (
+                <div
+                  className="text-gray-600 line-clamp-3"
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeHTML(evento.evento_descripcion),
+                  }}
+                />
+              )}
+
+              <div className="flex flex-wrap gap-6 mt-6 text-sm text-gray-500">
                 
-                {evento.evento_imagen && (
-                  <div className="relative w-full lg:w-80 h-72 shrink-0">
-                    <Image
-                      src={getStorageUrl(
-                        evento.evento_imagen
-                      )}
-                      alt={evento.evento_titulo}
-                      fill
-                      className="object-cover"
-                    />
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  {formatDate(evento.evento_fecha)}
+                </div>
+
+                {evento.evento_hora && (
+                  <div className="flex items-center gap-2">
+                    <Target className="w-4 h-4" />
+                    {evento.evento_hora}
                   </div>
                 )}
 
-                <div className="flex-1 p-8">
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900">
-                    {evento.evento_titulo}
-                  </h3>
-
-                  {evento.evento_descripcion && (
-                    <div
-                      className="text-gray-600 line-clamp-3"
-                      dangerouslySetInnerHTML={{
-                        __html: sanitizeHTML(
-                          evento.evento_descripcion
-                        ),
-                      }}
-                    />
-                  )}
-
-                  <div className="flex flex-wrap gap-6 mt-6 text-sm text-gray-500">
-                    
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-
-                      {formatDate(
-                        evento.evento_fecha
-                      )}
-                    </div>
-
-                    {evento.evento_hora && (
-                      <div className="flex items-center gap-2">
-                        <Target className="w-4 h-4" />
-
-                        {evento.evento_hora}
-                      </div>
-                    )}
-
-                    {evento.evento_lugar && (
-                      <div className="flex items-center gap-2">
-                        <GraduationCap className="w-4 h-4" />
-
-                        {evento.evento_lugar}
-                      </div>
-                    )}
+                {evento.evento_lugar && (
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4" />
+                    {evento.evento_lugar}
                   </div>
-                </div>
+                )}
               </div>
             </div>
-          </Link>
-        ))
-      ) : (
-        <div className="bg-white rounded-3xl border p-12 text-center">
-          <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-
-          <h3 className="text-2xl font-bold text-gray-700 mb-2">
-            No hay eventos
-          </h3>
-
-          <p className="text-gray-500">
-            No se encontraron eventos del instituto.
-          </p>
+          </div>
         </div>
-      )}
+      </Link>
+    ))
+  ) : (
+    <div className="bg-white rounded-3xl border p-12 text-center">
+      <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+
+      <h3 className="text-2xl font-bold text-gray-700 mb-2">
+        No hay eventos
+      </h3>
+
+      <p className="text-gray-500">
+        No se encontraron eventos del instituto.
+      </p>
     </div>
+  )}
+</div>
 
     {/* CALENDARIO */}
 
@@ -1067,9 +1163,13 @@ function InstitutoInvestigacionContent() {
         </div>
 
         <div className="p-4">
-          <CalendarWidget
-            eventos={eventosFiltrados}
-          />
+<CalendarWidget
+  colores={{
+    color_primario: primaryColor,
+    color_secundario: secondaryColor,
+  }}
+  eventos={calendarEvents}
+/>
         </div>
       </div>
     </div>
@@ -1078,65 +1178,64 @@ function InstitutoInvestigacionContent() {
 
             {/* PUBLICACIONES */}
 
-            {activeTab ===
-              'publicaciones' && (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {publicacionesFiltradas.map(
-                  (
-                    publi
-                  ) => (
-                    <Link
-                      key={
-                        publi.publicaciones_id
-                      }
-                      href={`/institutoInvestigacion/publicaciones/${publi.publicaciones_id}`}
-                    >
-                      <div className="bg-white rounded-3xl border shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden h-full hover:-translate-y-2">
-                        {publi.publicaciones_imagen ? (
-                          <div className="relative h-56">
-                            <Image
-                              src={getStorageUrl(
-                                publi.publicaciones_imagen
-                              )}
-                              alt={
-                                publi.publicaciones_titulo
-                              }
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div
-                            className="h-56 flex items-center justify-center"
-                            style={{
-                              background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
-                            }}
-                          >
-                            <BookOpen className="w-16 h-16 text-white/70" />
-                          </div>
-                        )}
-
-                        <div className="p-8">
-                          <h3 className="text-xl font-bold mb-4 text-gray-900 line-clamp-2">
-                            {
-                              publi.publicaciones_titulo
-                            }
-                          </h3>
-
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <Calendar className="w-4 h-4" />
-
-                            {formatDate(
-                              publi.publicaciones_fecha
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  )
-                )}
+{activeTab === 'publicaciones' && (
+  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {publicacionesFiltradas.length > 0 ? (
+      publicacionesFiltradas.map((publi) => (
+        <Link
+          key={publi.publicaciones_id}
+          href={`/institutoInvestigacion/publicaciones/${publi.publicaciones_id}`}
+        >
+          <div className="bg-white rounded-3xl border shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden h-full hover:-translate-y-2">
+            
+            {publi.publicaciones_imagen ? (
+              <div className="relative h-56">
+                <Image
+                  src={getStorageUrl(publi.publicaciones_imagen)}
+                  alt={publi.publicaciones_titulo}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div
+                className="h-56 flex items-center justify-center"
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+                }}
+              >
+                <BookOpen className="w-16 h-16 text-white/70" />
               </div>
             )}
+
+            <div className="p-8">
+              <h3 className="text-xl font-bold mb-4 text-gray-900 line-clamp-2">
+                {publi.publicaciones_titulo}
+              </h3>
+
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <Calendar className="w-4 h-4" />
+                {formatDate(publi.publicaciones_fecha)}
+              </div>
+            </div>
+          </div>
+        </Link>
+      ))
+    ) : (
+      <div className="col-span-full bg-white rounded-3xl border p-12 text-center">
+        <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+
+        <h3 className="text-2xl font-bold text-gray-700 mb-2">
+          No hay publicaciones
+        </h3>
+
+        <p className="text-gray-500">
+          No se encontraron publicaciones del instituto.
+        </p>
+      </div>
+    )}
+  </div>
+)}
 
             {/* EVENTOS */}
 

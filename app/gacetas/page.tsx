@@ -6,6 +6,7 @@ import {
   Suspense,
   useMemo,
 } from 'react';
+import axios from 'axios';
 
 import {
   useSearchParams,
@@ -261,21 +262,13 @@ function GacetasContent() {
             return;
           }
 
-          const rawData =
-            gacetaRes.data
-              ?.upea_gaceta_universitaria;
+  const rawData =
+  gacetaRes.data?.upea_gaceta_universitaria || [];
 
-          if (
-            !Array.isArray(
-              rawData
-            )
-          ) {
-            setError(
-              'No existen gacetas disponibles'
-            );
-
-            return;
-          }
+if (!Array.isArray(rawData)) {
+  setGacetas([]);
+  return;
+}
 
           const data =
             rawData.map(
@@ -364,22 +357,25 @@ function GacetasContent() {
               )
             );
           }
-        } catch (
-          error
-        ) {
-          if (
-            process.env.NODE_ENV !==
-            'production'
-          ) {
-            console.error(
-              error
-            );
-          }
+        } catch (error) {
+  if (axios.isAxiosError(error)) {
+    const status = error.response?.status;
 
-          setError(
-            'Error cargando gacetas'
-          );
-        } finally {
+    if (status === 404) {
+      setGacetas([]);
+      setTypes(['TODOS']);
+      setError(null);
+
+      return;
+    }
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.error(error);
+  }
+
+  setError('Error cargando gacetas');
+}finally {
           setLoading(
             false
           );
