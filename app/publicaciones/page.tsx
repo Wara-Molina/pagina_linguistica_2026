@@ -663,208 +663,253 @@ function PublicacionesContent() {
           </div>
         </section>
 
-        {/* GRID */}
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {publicacionesPagina.map(
-                (publicacion) => (
-                  <Link
-                    key={
-                      publicacion.publicaciones_id
-                    }
-                    href={`/publicaciones/${publicacion.publicaciones_id}`}
-                    className="group"
-                  >
-                    <article
-                      className="
-                        bg-white/95
-                        backdrop-blur-xl
-                        rounded-3xl
-                        overflow-hidden
-                        border
-                        shadow-xl
-                        hover:shadow-2xl
-                        transition-all
-                        duration-500
-                        hover:-translate-y-2
-                      "
-                      style={{
-                        borderColor:
-                          hexToRgba(
-                            primaryColor,
-                            0.15
-                          ),
-                      }}
-                    >
-                      {/* IMAGE */}
-                      <div className="relative h-56 overflow-hidden">
-                        <Image
-                          src={getImageUrl(
-                            publicacion.publicaciones_imagen
+{/* GRID */}
+<section className="py-16">
+  <div className="max-w-7xl mx-auto px-6">
+
+    {publicacionesPagina.length === 0 ? (
+      <div className="flex flex-col items-center justify-center text-center py-24">
+        <div
+          className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
+          style={{
+            backgroundColor: hexToRgba(primaryColor, 0.1),
+          }}
+        >
+          <BookOpen
+            className="w-12 h-12"
+            style={{ color: primaryColor }}
+          />
+        </div>
+
+        <h2 className="text-3xl font-bold text-gray-800 mb-3">
+          Sin publicaciones disponibles
+        </h2>
+
+        <p className="text-gray-500 max-w-md mb-6">
+          {busqueda || categoriaActiva !== 'TODAS'
+            ? 'No se encontraron publicaciones con los filtros seleccionados.'
+            : 'Actualmente no existen publicaciones registradas.'}
+        </p>
+
+        {(busqueda || categoriaActiva !== 'TODAS') && (
+          <button
+            onClick={() => {
+              setBusqueda('');
+              setCategoriaActiva('TODAS');
+            }}
+            className="px-6 py-3 rounded-xl text-white font-medium shadow-lg hover:opacity-90 transition-all"
+            style={{
+              backgroundColor: primaryColor,
+            }}
+          >
+            Mostrar todas las publicaciones
+          </button>
+        )}
+      </div>
+    ) : (
+      <>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {publicacionesPagina.map(
+            (publicacion) => (
+              <Link
+                key={
+                  publicacion.publicaciones_id
+                }
+                href={`/publicaciones/${publicacion.publicaciones_id}`}
+                className="group"
+              >
+                <article
+                  className="
+                    bg-white/95
+                    backdrop-blur-xl
+                    rounded-3xl
+                    overflow-hidden
+                    border
+                    shadow-xl
+                    hover:shadow-2xl
+                    transition-all
+                    duration-500
+                    hover:-translate-y-2
+                  "
+                  style={{
+                    borderColor:
+                      hexToRgba(
+                        primaryColor,
+                        0.15
+                      ),
+                  }}
+                >
+                  {/* IMAGE */}
+                  <div className="relative h-56 overflow-hidden">
+                    <Image
+                      src={getImageUrl(
+                        publicacion.publicaciones_imagen
+                      )}
+                      alt={sanitizeSearchQuery(
+                        publicacion.publicaciones_titulo
+                      )}
+                      fill
+                      sizes="(max-width:768px) 100vw, 33vw"
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+
+                    {publicacion.publicaciones_tipo && (
+                      <div className="absolute top-4 left-4">
+                        <span
+                          className="px-4 py-1.5 rounded-full text-xs font-semibold bg-white/90 backdrop-blur-md"
+                          style={{
+                            color:
+                              primaryColor,
+                          }}
+                        >
+                          {
+                            publicacion.publicaciones_tipo
+                          }
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* CONTENT */}
+                  <div className="p-7">
+                    <h2 className="text-xl font-bold text-gray-900 line-clamp-2 mb-4 group-hover:text-blue-900 transition-colors">
+                      {sanitizeSearchQuery(
+                        publicacion.publicaciones_titulo
+                      )}
+                    </h2>
+
+                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-6">
+                      {removeHtml(
+                        publicacion.publicaciones_descripcion
+                      ).slice(
+                        0,
+                        180
+                      )}
+                    </p>
+
+                    <div className="space-y-3 border-t pt-5">
+                      {publicacion.publicaciones_autor && (
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <User
+                            className="w-4 h-4"
+                            style={{
+                              color:
+                                primaryColor,
+                            }}
+                          />
+
+                          {sanitizeSearchQuery(
+                            publicacion.publicaciones_autor
                           )}
-                          alt={sanitizeSearchQuery(
-                            publicacion.publicaciones_titulo
-                          )}
-                          fill
-                          sizes="(max-width:768px) 100vw, 33vw"
-                          className="object-cover group-hover:scale-110 transition-transform duration-700"
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Calendar
+                          className="w-4 h-4"
+                          style={{
+                            color:
+                              primaryColor,
+                          }}
                         />
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-
-                        {publicacion.publicaciones_tipo && (
-                          <div className="absolute top-4 left-4">
-                            <span
-                              className="px-4 py-1.5 rounded-full text-xs font-semibold bg-white/90 backdrop-blur-md"
-                              style={{
-                                color:
-                                  primaryColor,
-                              }}
-                            >
-                              {
-                                publicacion.publicaciones_tipo
-                              }
-                            </span>
-                          </div>
+                        {formatDate(
+                          publicacion.publicaciones_fecha
                         )}
                       </div>
+                    </div>
+                  </div>
+                </article>
+              </Link>
+            )
+          )}
+        </div>
 
-                      {/* CONTENT */}
-                      <div className="p-7">
-                        <h2 className="text-xl font-bold text-gray-900 line-clamp-2 mb-4 group-hover:text-blue-900 transition-colors">
-                          {sanitizeSearchQuery(
-                            publicacion.publicaciones_titulo
-                          )}
-                        </h2>
-
-                        <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-6">
-                          {removeHtml(
-                            publicacion.publicaciones_descripcion
-                          ).slice(
-                            0,
-                            180
-                          )}
-                        </p>
-
-                        <div className="space-y-3 border-t pt-5">
-                          {publicacion.publicaciones_autor && (
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <User
-                                className="w-4 h-4"
-                                style={{
-                                  color:
-                                    primaryColor,
-                                }}
-                              />
-
-                              {sanitizeSearchQuery(
-                                publicacion.publicaciones_autor
-                              )}
-                            </div>
-                          )}
-
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Calendar
-                              className="w-4 h-4"
-                              style={{
-                                color:
-                                  primaryColor,
-                              }}
-                            />
-
-                            {formatDate(
-                              publicacion.publicaciones_fecha
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </article>
-                  </Link>
+        {/* PAGINATION */}
+        {totalPaginas > 1 && (
+          <div className="flex items-center justify-center gap-3 mt-14">
+            <button
+              onClick={() =>
+                cambiarPagina(
+                  paginaActual - 1
                 )
-              )}
-            </div>
+              }
+              disabled={
+                paginaActual === 1
+              }
+              className="w-11 h-11 rounded-xl border bg-white shadow-sm flex items-center justify-center disabled:opacity-40"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
 
-            {/* PAGINATION */}
-            {totalPaginas > 1 && (
-              <div className="flex items-center justify-center gap-3 mt-14">
-                <button
-                  onClick={() =>
-                    cambiarPagina(
-                      paginaActual - 1
-                    )
-                  }
-                  disabled={
-                    paginaActual === 1
-                  }
-                  className="w-11 h-11 rounded-xl border bg-white shadow-sm flex items-center justify-center disabled:opacity-40"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
+            {Array.from({
+              length:
+                totalPaginas,
+            })
+              .slice(0, 5)
+              .map((_, i) => {
+                const page =
+                  i + 1;
 
-                {Array.from({
-                  length:
-                    totalPaginas,
-                })
-                  .slice(0, 5)
-                  .map((_, i) => {
-                    const page =
-                      i + 1;
-
-                    return (
-                      <button
-                        key={page}
-                        onClick={() =>
-                          cambiarPagina(
-                            page
-                          )
-                        }
-                        className={`
-                          w-11
-                          h-11
-                          rounded-xl
-                          font-semibold
-                          transition-all
-                          ${
-                            paginaActual ===
-                            page
-                              ? 'text-white shadow-xl scale-110'
-                              : 'bg-white border'
+                return (
+                  <button
+                    key={page}
+                    onClick={() =>
+                      cambiarPagina(
+                        page
+                      )
+                    }
+                    className={`
+                      w-11
+                      h-11
+                      rounded-xl
+                      font-semibold
+                      transition-all
+                      ${
+                        paginaActual ===
+                        page
+                          ? 'text-white shadow-xl scale-110'
+                          : 'bg-white border'
+                      }
+                    `}
+                    style={
+                      paginaActual ===
+                      page
+                        ? {
+                            backgroundColor:
+                              primaryColor,
                           }
-                        `}
-                        style={
-                          paginaActual ===
-                          page
-                            ? {
-                                backgroundColor:
-                                  primaryColor,
-                              }
-                            : {}
-                        }
-                      >
-                        {page}
-                      </button>
-                    );
-                  })}
+                        : {}
+                    }
+                  >
+                    {page}
+                  </button>
+                );
+              })}
 
-                <button
-                  onClick={() =>
-                    cambiarPagina(
-                      paginaActual + 1
-                    )
-                  }
-                  disabled={
-                    paginaActual ===
-                    totalPaginas
-                  }
-                  className="w-11 h-11 rounded-xl border bg-white shadow-sm flex items-center justify-center disabled:opacity-40"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            )}
+            <button
+              onClick={() =>
+                cambiarPagina(
+                  paginaActual + 1
+                )
+              }
+              disabled={
+                paginaActual ===
+                totalPaginas
+              }
+              className="w-11 h-11 rounded-xl border bg-white shadow-sm flex items-center justify-center disabled:opacity-40"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
-        </section>
+        )}
+      </>
+    )}
+
+  </div>
+</section>
       </main>
 
       <Footer />
