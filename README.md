@@ -1,4 +1,4 @@
-# Portal Web Lingüística e Idiomas 2026
+# Lingüística e Idiomas 2026
 
 Proyecto web desarrollado con Next.js, TypeScript y Tailwind CSS para la gestión y difusión de información institucional, eventos, cursos, gacetas y publicaciones de la carrera de Lingüística e Idiomas.
 
